@@ -38,12 +38,22 @@
 			<optional>true</optional>
 		</dependency>
 		
+		<!--  MYSQL -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.26</version>
 <!--			<scope>runtime</scope>-->
 		</dependency>
+		
+		<!-- MIGRAÇÕES - FLYWAY-->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-mysql</artifactId>
+<!--			<version>9.15.2</version>-->
+		</dependency>
+		
+		
 		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
