@@ -22,5 +22,5 @@ VALUES
 ('Pedro Lima', 0, 'Rua dos Pinheiros', 987, 'Bloco C', 'Jardim Europa', '01234-567', 'São Paulo', 'SP'),
 ('Carla Fernandes', 1, 'Avenida dos Coqueiros', 1010, 'Sala 2', 'Praia do Forte', '78901-234', 'Natal', 'RN'),
 ('Pedro Lima', 0, 'Rua dos Pinheiros', 987, 'Bloco C', 'Jardim Europa', '01234-567', 'São Paulo', 'SP'),
-('Lucas Alves', 1, 'Avenida dos Sabiás', 246, 'Casa 3', 'Jardim das Flores', '65432-109', 'Belo Horizonte', 'MG')
-('Mariana Souza', 1, 'Rua das Laranjeiras', 321, '', 'Centro', '45678-901', 'Florianópolis', 'SC'),;
+('Lucas Alves', 1, 'Avenida dos Sabiás', 246, 'Casa 3', 'Jardim das Flores', '65432-109', 'Belo Horizonte', 'MG'),
+('Mariana Souza', 1, 'Rua das Laranjeiras', 321, '', 'Centro', '45678-901', 'Florianópolis', 'SC');
