@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "Pessoa")
@@ -19,6 +20,7 @@ public class Pessoa {
 	private long codigo;
 	
 	@NotNull
+	@Size(min = 3, max = 50)
 	private String nome;
 	
 	@NotNull
@@ -52,8 +54,6 @@ public class Pessoa {
 	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
 	}
-	
-	
 	@Override
 	public int hashCode() {
 		return Objects.hash(codigo);
@@ -67,7 +67,10 @@ public class Pessoa {
 		if (getClass() != obj.getClass())
 			return false;
 		Pessoa other = (Pessoa) obj;
-		return codigo == other.codigo;
-	}
+		return  Objects.equals(codigo, other.codigo);	}
+	
+	
+	
+	
 	
 }
