@@ -1,4 +1,5 @@
-CREATE TABLE pessoa (
+
+	CREATE TABLE pessoa (
 	codigo		BIGINT(20) 	PRIMARY KEY AUTO_INCREMENT,
 	nome 		VARCHAR(50) NOT NULL,
 	ativo 		BOOLEAN 	NOT NULL,
@@ -23,5 +24,4 @@ VALUES
 ('José Pereira', 0, 'Rua das Árvores', 789, '', 'Vila Verde', '45678-912', 'Belo Horizonte', 'MG'),
 ('Ana Oliveira', 1, 'Rua das Pedras', 1010, '', 'Costa Azul', '23456-789', 'Salvador', 'BA'),
 ('Fernanda Santos', 1, 'Avenida dos Girassóis', 222, 'Casa 2', 'Jardim das Flores', '87654-321', 'Curitiba', 'PR');
-
 	
