@@ -6,4 +6,6 @@ import com.example.algamoney.api.model.Lancamento;
 
 public interface LancamentosRepository extends JpaRepository<Lancamento, Long> {
 
+	Lancamento findOne(Long codigo);
+
 }
