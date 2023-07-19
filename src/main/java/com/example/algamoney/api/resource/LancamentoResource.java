@@ -1,11 +1,18 @@
 package com.example.algamoney.api.resource;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +21,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.algamoney.api.event.RecursoCriadoEvent;
+import com.example.algamoney.api.exceptionhandler.AlgamoneyExceptionHandler.Erro;
 import com.example.algamoney.api.model.Lancamento;
 import com.example.algamoney.api.repository.LancamentosRepository;
+import com.example.algamoney.api.repository.filter.LancamentoFilter;
+import com.example.algamoney.api.service.exception.PessoaInexistenteOuInativaException;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -30,14 +40,17 @@ public class LancamentoResource {
 	@Autowired
 	private ApplicationEventPublisher publisher;
 	
-	@GetMapping
-	public List<Lancamento> Listar(){
-			return lancamentosRepository.findAll();
+	@Autowired
+	private MessageSource messageSource;
+	
+	@GetMapping("/pesquisa")
+	public Page<Lancamento> pesquisaFiltrada(LancamentoFilter lancamentoFilter, Pageable pageable){
+			return lancamentosRepository.filtrar(lancamentoFilter, pageable);
 	}
 	
 	@GetMapping
-	public ResponseEntity<Lancamento> buscarPeloCodigo(@PathVariable Long codigo){
-		Lancamento lancamento = lancamentosRepository.findOne(codigo);
+	public ResponseEntity<Optional<Lancamento>> buscarPeloCodigo(@PathVariable Long codigo){
+		Optional<Lancamento> lancamento = lancamentosRepository.findById(codigo);
 		return lancamento != null ? ResponseEntity.ok(lancamento) : ResponseEntity.notFound().build();
 	}
 		
@@ -47,6 +60,15 @@ public class LancamentoResource {
         publisher.publishEvent(new RecursoCriadoEvent(this, response, lancamentoSalvo.getCodigo()));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(lancamento);
+    }
+    
+    @ExceptionHandler({ PessoaInexistenteOuInativaException.class })
+    private ResponseEntity<Object> handlePessoaInexistenteOuInativaException(PessoaInexistenteOuInativaException ex) {
+        String mensagemUsuario = messageSource.getMessage("pessoa.inexistente-ou-inativa", null, LocaleContextHolder.getLocale());
+        String mensagemDesenvolvedor = ex.toString();
+        List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
+
+        return ResponseEntity.badRequest().body(erros);
     }
 	
 	

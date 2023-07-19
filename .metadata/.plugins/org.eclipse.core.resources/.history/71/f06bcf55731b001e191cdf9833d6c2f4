@@ -1,0 +1,38 @@
+package com.uc.komedi.model.entities;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.io.Serializable;
+import java.util.List;
+
+@Entity
+@Table(name = "usuarios")
+@Getter @Setter
+@AllArgsConstructor @NoArgsConstructor
+public class Usuario implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String senha;
+    private String email;
+    private String telefone; // Usar validation ?
+    private String nome;
+    private String urlFoto;
+
+    @ManyToMany
+    @JoinTable(name = "usuario_patrocinio_projeto",
+            joinColumns = @JoinColumn(name = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "id_projeto")
+    )
+    private List<Projeto> projetos;
+
+    @ManyToOne
+    @JoinColumn(name = "id_role")
+    private Role role;
+
+}

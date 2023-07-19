@@ -53,12 +53,12 @@
 <!--			<scope>runtime</scope>-->
 		</dependency>
 		
-		<!-- MIGRAÇÕES - FLYWAY-->
-		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-mysql</artifactId>
+<!--		 MIGRAÇÕES - FLYWAY-->
+<!--		<dependency>-->
+<!--			<groupId>org.flywaydb</groupId>-->
+<!--			<artifactId>flyway-mysql</artifactId>-->
 <!--			<version>9.15.2</version>-->
-		</dependency>
+<!--		</dependency>-->
 		
 		
 		<dependency>
