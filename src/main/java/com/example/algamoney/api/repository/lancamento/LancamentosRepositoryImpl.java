@@ -76,6 +76,7 @@ public class LancamentosRepositoryImpl implements LancamentosRepositoryQuery {
 		
 		Root<Lancamento> root = criteria.from(Lancamento.class);
 		
+		@SuppressWarnings("unused")
 		Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);
 		
 		criteria.select(builder.count(root));
