@@ -1,6 +1,7 @@
 package com.example.algamoney.api.token;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -11,6 +12,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+import org.apache.catalina.util.ParameterMap;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -34,8 +36,8 @@ public class RefreshTokenCookiePreProcessorFilter implements Filter {
 					req = new MyServletRequestWrapper(req, refreshToken);
 				}
 			}
-			
 		}
+		chain.doFilter(req, response);
 	}
 	
 	static class MyServletRequestWrapper extends HttpServletRequestWrapper {
@@ -45,6 +47,14 @@ public class RefreshTokenCookiePreProcessorFilter implements Filter {
 		public MyServletRequestWrapper(HttpServletRequest request, String refreshToken) {
 			super(request);
 			this.refreshToken = refreshToken;
+		}
+		
+		@Override
+		public Map<String, String[]> getParameterMap() {
+			ParameterMap<String, String[]> map = new ParameterMap<>(getRequest().getParameterMap());
+			map.put("refresh_token", new String[] {refreshToken});
+			map.setLocked(true);
+			return map;
 		}
 		
 	}
