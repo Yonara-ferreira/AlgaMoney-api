@@ -100,7 +100,6 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
 			return mensagemDesenvolvedor;
 		}
 		 
-		 
 	 }
 
 }
