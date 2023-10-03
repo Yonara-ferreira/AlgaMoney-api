@@ -11,6 +11,7 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
@@ -34,11 +35,19 @@ public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Acces
 		HttpServletRequest reques = ((ServletServerHttpRequest) request).getServletRequest();
 		HttpServletResponse resp = ((ServletServerHttpResponse) response).getServletResponse();
 		
+		DefaultOAuth2AccessToken token = (DefaultOAuth2AccessToken)body; 
+		
 		String refreshToken = body.getRefreshToken().getValue();
 		adicionarRefreshToken(refreshToken,reques, resp);
+		removerRefreshTokenDoBody((DefaultOAuth2AccessToken) body);
 		
-		return null;
+		return body;
 	}
+
+	private void removerRefreshTokenDoBody(DefaultOAuth2AccessToken token) {
+		token.setRefreshToken(null);
+	}
+
 
 	private void adicionarRefreshToken(String refreshToken, HttpServletRequest reques, HttpServletResponse resp) {
 		Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken); 
