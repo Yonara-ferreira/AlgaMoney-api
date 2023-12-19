@@ -23,33 +23,39 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	
 
 	@SuppressWarnings("unused")
-	@Autowired(required=true)
+	@Autowired
 	@Qualifier("authenticationManagerBean")
 	private AuthenticationManager authenticationManager;
 	
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.inMemory()
-			.withClient("narah")
-			.secret("{noop}@narah0")
+			.withClient("angular")
+			.secret("@ngul@r0")
 			.scopes("read", "write")
 			.authorizedGrantTypes("password", "refresh_token")
-			.accessTokenValiditySeconds(20)
-			.refreshTokenValiditySeconds(3600 * 24);
+			.accessTokenValiditySeconds(1800)
+			.refreshTokenValiditySeconds(3600 * 24)
+				.and()
+				.withClient("narah")
+				.secret("narah12")
+				.scopes("read")
+				.authorizedGrantTypes("password", "refresh_token")
+				.accessTokenValiditySeconds(1800)
+				.refreshTokenValiditySeconds(3600 * 24);
 
 	}
 	
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 		endpoints.tokenStore(tokenStore())
-				.accessTokenConverter(AccessTokenConverter())
+				.accessTokenConverter(accessTokenConverter())
 				.reuseRefreshTokens(false)
 				.authenticationManager(authenticationManager);
-
 	}
 
 	@Bean
-	public JwtAccessTokenConverter AccessTokenConverter() {
+	public JwtAccessTokenConverter accessTokenConverter() {
 		JwtAccessTokenConverter accessTokenConverter = new JwtAccessTokenConverter();
 		accessTokenConverter.setSigningKey("api");
 		return accessTokenConverter;
@@ -57,6 +63,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Bean
 	public TokenStore tokenStore() {
-		return new JwtTokenStore(AccessTokenConverter());
+		return new JwtTokenStore(accessTokenConverter());
 	}
 }
