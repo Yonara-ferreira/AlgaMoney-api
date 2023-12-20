@@ -2,6 +2,7 @@ package com.example.algamoney.api.token;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -25,18 +26,18 @@ public class RefreshTokenCookiePreProcessorFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		
-		HttpServletRequest req = (HttpServletRequest) request; 
-		
-		if("/oauth/token".equals(req.getRequestURI())
-				&& "refresh_token".equals(req.getParameter("grant_type")) 
-				&& req.getCookies() != null) {
-			for(Cookie cookie : req.getCookies()) {
-				if(cookie.getName().equalsIgnoreCase("refresh_token")) {
-					String refreshToken = cookie.getValue();
-					req = new MyServletRequestWrapper(req, refreshToken);
-				}
-			}
+		HttpServletRequest req = (HttpServletRequest) request;
+
+		if ("/oauth/token".equals(req.getRequestURI()) && "refresh_token".equals(req.getParameter("grant_type")) && req.getCookies() != null) {
+			String refreshToken = Stream.of(req.getCookies())
+					.filter(cookie -> "refreshToken".equals(cookie.getName()))
+					.findFirst()
+					.map(cookie -> cookie.getValue())
+					.orElse(null);
+
+			req = new MyServletRequestWrapper(req, refreshToken);
 		}
+
 		chain.doFilter(req, response);
 	}
 	
@@ -52,7 +53,7 @@ public class RefreshTokenCookiePreProcessorFilter implements Filter {
 		@Override
 		public Map<String, String[]> getParameterMap() {
 			ParameterMap<String, String[]> map = new ParameterMap<>(getRequest().getParameterMap());
-			map.put("refresh_token", new String[] {refreshToken});
+			map.put("refresh_token", new String[] { refreshToken });
 			map.setLocked(true);
 			return map;
 		}
