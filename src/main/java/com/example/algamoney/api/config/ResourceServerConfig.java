@@ -17,10 +17,15 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.expression.OAuth2MethodSecurityExpressionHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.time.Duration;
+import java.util.Arrays;
 
 @SuppressWarnings("deprecation")
 @Configuration
-@EnableWebSecurity
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
@@ -34,17 +39,35 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 	}
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-		.antMatchers("/categorias").permitAll()
-			.anyRequest().authenticated()
-			.and()
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-		.csrf().disable();
+		http.cors()
+				.and()
+				.authorizeRequests()
+				.anyRequest().authenticated()
+				.and()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+				.csrf().disable();
+
 	}
 	
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
 		resources.stateless(true);
+	}
+
+	@Bean
+	public CorsFilter corsFilter() {
+		CorsConfiguration config = new CorsConfiguration();
+		config.setAllowCredentials(true);
+		config.addAllowedHeader("*");
+		config.addAllowedMethod("*");
+		config.setMaxAge(Duration.ofHours(1L));
+		config.setAllowedOrigins(Arrays.asList("http://localhost:8000")); // TODO: trazer do banco
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", config);
+
+		return new CorsFilter(source);
 	}
 
 	@Autowired
